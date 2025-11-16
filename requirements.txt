@@ -2,4 +2,3 @@ Flask
 Flask-SQLAlchemy
 google-generativeai
 python-dotenv
-mem0ai
