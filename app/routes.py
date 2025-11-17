@@ -76,19 +76,23 @@ def delete_agent(agent_id):
 
 
 # --- THE MAGIC DOOR (CI/CD) ---
+# ... (Your existing imports)
+
+# --- THE MAGIC DOOR (FIXED) ---
 @bp.route('/update_server', methods=['POST'])
 def webhook():
     if request.method == 'POST':
         try:
-            # 1. Tell the server to download the new code from GitHub
-            subprocess.run(["git", "pull"], check=True)
-
-            # 2. Tell PythonAnywhere to RELOAD the app
-            # We do this by "touching" the WSGI file
-            # REPLACE 'gevversonkipkoech' with your actual username if different!
-            username = "gevversonkipkoech" 
+            # 1. Define explicit paths
+            username = "gevversonkipkoech"
+            repo_path = f"/home/{username}/agent-builder"
             wsgi_path = f"/var/www/{username}_pythonanywhere_com_wsgi.py"
-
+            
+            # 2. Run Git Pull inside the specific folder
+            # cwd stands for "Current Working Directory"
+            subprocess.run(["git", "pull"], check=True, cwd=repo_path)
+            
+            # 3. Reload the server
             if os.path.exists(wsgi_path):
                 os.utime(wsgi_path, None)
                 return "Updated and Reloading successfully!", 200
