@@ -105,7 +105,7 @@
   <body>
     <div class="container">
       <div class="form-section">
-        <h1>IntelliVerse Agent Builder v4</h1>
+        <h1>IntelliVerse Agent Builder </h1>
         <h2>Create New Agent</h2>
 
         <form action="/" method="POST">
@@ -144,7 +144,7 @@
                         <a href="/agent/{{ agent.id }}" class="btn" style="display:inline-block; text-decoration:none; font-size:0.9rem;">Chat</a>
                         
                         <form action="/delete/{{ agent.id }}" method="POST" style="display:inline; margin-left: 10px;">
-                            <button type="submit" class="btn" style="background-color: #35dcb2; cursor: pointer;">Delete Agent</button>
+                            <button type="submit" class="btn" style="background-color: #dc3535; cursor: pointer;">Delete Agent</button>
                         </form>
                     </li>
           {% endfor %} {% else %}
