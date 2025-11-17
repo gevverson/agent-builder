@@ -1,14 +1,12 @@
 from app import create_app, db
-
-# --- NEW: We must import all our models so the DB can see them ---
-from app.models import Agent, KnowledgeFile, Conversation
+# We only import Agent for now.
+# Mem0 handles the memory internally, so we don't need a Conversation table.
+from app.models import Agent 
 
 app = create_app()
 
 if __name__ == '__main__':
     with app.app_context():
-        # This creates the tables for Agent, KnowledgeFile, AND Conversation
+        # This creates the database with just the Agent table
         db.create_all() 
-
-    print("Database tables created successfully in 'app.db'!")
     app.run(debug=True, port=5000)

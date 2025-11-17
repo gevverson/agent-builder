@@ -137,10 +137,11 @@
 
         <ul class="agent-list">
           {% if agents %} {% for agent in agents %}
-          <li class="agent-item">
-            <h3>{{ agent.name }}</h3>
-            <p>{{ agent.instructions }}</p>
-          </li>
+       <li class="agent-item">
+    <h3>{{ agent.name }}</h3>
+    <p>{{ agent.instructions }}</p>
+    <a href="/agent/{{ agent.id }}" class="btn" style="display:inline-block; text-decoration:none; font-size:0.9rem;">Chat with Agent</a>
+</li>
           {% endfor %} {% else %}
           <li class="no-agents">No agents created yet.</li>
           {% endif %}

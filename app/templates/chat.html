@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Agent</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; }
+        .chat-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); height: 60vh; overflow-y: auto; display: flex; flex-direction: column; }
+        .message { margin: 10px 0; padding: 10px 15px; border-radius: 15px; max-width: 70%; }
+        .user { background-color: #007bff; color: white; align-self: flex-end; }
+        .agent { background-color: #e9ecef; color: #333; align-self: flex-start; }
+        .input-area { margin-top: 20px; display: flex; gap: 10px; }
+        input { flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .home-link { display: block; margin-bottom: 20px; color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <a href="/" class="home-link">← Back to Admin Panel</a>
+    
+    <h1>Chat with {{ agent.name }}</h1>
+    
+    <div class="chat-container" id="chat-box">
+        <div class="message agent">Hello! I am {{ agent.name }}. How can I help you?</div>
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleEnter(event)">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const agentId = "{{ agent.id }}";
+        const chatBox = document.getElementById('chat-box');
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const question = input.value.trim();
+            if (!question) return;
+
+            // 1. Add User Message to Screen
+            addMessage(question, 'user');
+            input.value = '';
+
+            // 2. Send to Server
+            try {
+                const response = await fetch(`/chat/${agentId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question })
+                });
+                const data = await response.json();
+
+                // 3. Add AI Response to Screen
+                addMessage(data.response, 'agent');
+            } catch (error) {
+                addMessage("Error connecting to agent.", 'agent');
+            }
+        }
+
+        function addMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = `message ${sender}`;
+            div.innerText = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+    </script>
+</body>
+</html>
