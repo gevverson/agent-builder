@@ -20,6 +20,9 @@ def index():
     all_agents = Agent.query.all()
     return render_template("admin.html", agents=all_agents)
 
+
+
+
 # --- SHOW CHAT PAGE ---
 @bp.route('/agent/<int:agent_id>')
 def chat_page(agent_id):
@@ -57,3 +60,13 @@ def chat_api(agent_id):
          final_answer = str(ai_response)
 
     return jsonify({"response": final_answer})
+
+
+# --- NEW DELETE ROUTE ---
+@bp.route('/delete/<int:agent_id>', methods=['POST'])
+def delete_agent(agent_id):
+    agent = db.session.get(Agent, agent_id)
+    if agent:
+        db.session.delete(agent)
+        db.session.commit()
+    return redirect(url_for('main.index'))
