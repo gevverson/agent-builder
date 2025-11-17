@@ -1,7 +1,4 @@
 Flask
 Flask-SQLAlchemy
-google-generativeai
 python-dotenv
-mem0ai
-qdrant-client
-sentence-transformers
+mem0ai[gemini, qdrant]
