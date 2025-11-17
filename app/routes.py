@@ -1,3 +1,5 @@
+import subprocess
+import os
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from app import db
 from app.models import Agent
@@ -70,3 +72,29 @@ def delete_agent(agent_id):
         db.session.delete(agent)
         db.session.commit()
     return redirect(url_for('main.index'))
+
+
+
+# --- THE MAGIC DOOR (CI/CD) ---
+@bp.route('/update_server', methods=['POST'])
+def webhook():
+    if request.method == 'POST':
+        try:
+            # 1. Tell the server to download the new code from GitHub
+            subprocess.run(["git", "pull"], check=True)
+
+            # 2. Tell PythonAnywhere to RELOAD the app
+            # We do this by "touching" the WSGI file
+            # REPLACE 'gevversonkipkoech' with your actual username if different!
+            username = "gevversonkipkoech" 
+            wsgi_path = f"/var/www/{username}_pythonanywhere_com_wsgi.py"
+
+            if os.path.exists(wsgi_path):
+                os.utime(wsgi_path, None)
+                return "Updated and Reloading successfully!", 200
+            else:
+                return "Git pull worked, but WSGI file not found.", 200
+
+        except Exception as e:
+            return f"Error during update: {e}", 500
+    return "Wrong method", 400
