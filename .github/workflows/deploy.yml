@@ -34,5 +34,8 @@ jobs:
     # 5. THE NEW PART: Trigger PythonAnywhere to Update
     # If the tests pass, GitHub sends a POST request to your server
     - name: Deploy to PythonAnywhere
+      env:
+        DEPLOY_WEBHOOK_URL: ${{ vars.DEPLOY_WEBHOOK_URL }}
       run: |
-        curl -X POST http://gevversonkipkoech.pythonanywhere.com/update_server
+        curl -X POST "$DEPLOY_WEBHOOK_URL" \
+          -H "X-Deploy-Token: ${{ secrets.DEPLOY_WEBHOOK_SECRET }}"
